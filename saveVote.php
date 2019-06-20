@@ -12,14 +12,21 @@
 		else
 			return 0;
 	}
+	$jsonArray = [];
 	
+	
+	$jsonArray['Maps'] = [];
+
 	function pushMainMap($display, $name) {
 		$newArray['displayName'] = $display;
 		$newArray['mapName'] = $name;
 		$array[] = $newArray;
 		return $newArray;
 	}
+	$jsonArray = [];
 	
+	
+	$jsonArray['Maps'] = [];
 	function pushVariantInfo($display, $name, $commands, $maps) {
 		$newArray = [];
 		$newArray['displayName'] = $display;
@@ -28,6 +35,7 @@
 		$mapsArray = explode("\n", $maps);
 		$newArray['SpecificMaps'] = [];
 		foreach ($mapsArray as &$map){
+
 			$mapArray = [];
 			$mapInfo = explode("=", $map);
 			if (count($mapInfo) > 1) {
@@ -35,15 +43,17 @@
 				$mapArray['displayName'] = $mapInfo[1];
 				$newArray['SpecificMaps'][] =  $mapArray;
 			}
+			global $jsonArray;
+			if  (!isMapInVoting($jsonArray, $mapArray['mapName'])) {
+				$jsonArray['Maps'][] = $mapArray;
+			}
 		}
 		return $newArray;
 	}
-	
-	$jsonArray = [];
-	
-	
-	$jsonArray['Maps'] = [];
-	if (ischecked($_POST['Bunkerworld']))
+
+
+	//index errors being thrown when not checked. commented out until fixed.
+	/*if (ischecked($_POST['Bunkerworld']))
 		$jsonArray['Maps'][] = pushMainMap("Standoff", "Bunkerworld");
 	if (ischecked($_POST['Shrine']))
 		$jsonArray['Maps'][] = pushMainMap("Sandtrap", "Shrine");
@@ -64,7 +74,7 @@
 	if (ischecked($_POST['guardian']))
 		$jsonArray['Maps'][] = pushMainMap("Guardian", "guardian");
 	if (ischecked($_POST['s3d_avalanche']))
-		$jsonArray['Maps'][] = pushMainMap("Diamondback", "s3d_avalanche");
+		$jsonArray['Maps'][] = pushMainMap("Diamondback", "s3d_avalanche");*/
 	
 	$jsonArray['Types'] = [];
 	
@@ -74,5 +84,7 @@
 		}
 	}
 	file_put_contents($VOTING_location, json_encode($jsonArray, JSON_PRETTY_PRINT)) or die("Unable to save Config");
-	echo array2string("Voting JSON Saved.");
+	//echo array2string("Voting JSON Saved.");
+	echo "Voting JSON Saved.";
+
 ?>
