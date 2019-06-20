@@ -24,7 +24,6 @@ $(document).ready(function() {
 			  //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
 			},
 			success : function(response) {
-				alert(response);
 				$("#tmpDis").html(response);
 			}
 		});

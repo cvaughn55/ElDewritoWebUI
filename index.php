@@ -23,6 +23,8 @@
 	//echo '</pre>';
 	
 	$jsonArray = loadVotingJson();
+	
+	$permission = GetUserPermission(strtolower($_SESSION['uName']));
 ?>
 <html>
 	<head>
@@ -36,7 +38,9 @@
 	<link href="slider/css/slider.css" rel="stylesheet">
 	<script type="text/javascript">
 	</script>
+
 	</head>
+
 	<body>
 
       <!-- Fixed navbar -->
@@ -55,7 +59,7 @@
               <li class="nav-item">
                 <a data-div="congigMain" class="nav-link active" href="#">
                   <span data-feather="server"></span>
-                  Server
+                  Server Config
                 </a>
               </li>
               <li class="nav-item">
@@ -76,15 +80,31 @@
             </h6>
 			<ul class="nav flex-column">
 			  <li class="nav-item">
+                <a onclick="listPlayers();" data-div="playersMain" class="nav-link" href="#">
+                  <span data-feather="users"></span>
+                  Players
+                </a>
+              </li>
+			  <li class="nav-item">
                 <a data-div="rconMain" id="rconTabControl" class="nav-link" href="#">
                   <span data-feather="terminal"></span>
                   RCON Console
                 </a>
               </li>
             </ul>
+			<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+				<span>Settings</span>
+            </h6>
+			<ul class="nav flex-column">
+			  <li class="nav-item">
+                <a onclick="" data-div="usersMain" class="nav-link" href="#">
+                  <span data-feather="users"></span>
+                  Users
+                </a>
+              </li>
+            </ul>
           </div>
         </nav>
-
         <main id="congigMain" role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
 		<form id="ctgForm">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -206,17 +226,6 @@
             </div>
 			</form>
         </main>
-		<main id="rconMain" role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="display:none;">
-			<div class="pagination-centered text-center" style="width: 100%; height: 90%;" id="consoleContainer">
-				<textarea id="messageLog" class="form-control BottomRadius" aria-label="With textarea" readonly style="height: 300px;"></textarea>
-				<div id="commandContainer" style="" class="input-group mb-3 ">
-					<input type="text" id="rconCommand" class="form-control TopRadius" placeholder="RCON Command" aria-label="Recipient's username" aria-describedby="basic-addon2">
-					<div class="input-group-append" style="border-radius: 0 !important">
-						<button id="commandSubmit" class="btn btn-outline-secondary TopRadius" type="button">Send</button>
-					</div>
-				</div>
-			</div>
-		</main>
 		<main id="voteMain" role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="display:none;">
 		<form id="voteForm">
 			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -233,67 +242,67 @@
 					<h1 class="h5 font-weight-normal">Default Maps Used</h1>
 					<div class="spacer"></div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="Bunkerworld" id="Bunkerworld" >
+						<input class="form-check-input" type="checkbox" value="1" name="Bunkerworld" id="Bunkerworld" <?php echo getChecked(isMapInVoting($jsonArray, "Bunkerworld")); ?>>
 						<label class="form-check-label" for="Bunkerworld">
 							Standoff
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="Shrine" id="Shrine" >
+						<input class="form-check-input" type="checkbox" value="1" name="Shrine" id="Shrine" <?php echo getChecked(isMapInVoting($jsonArray, "Shrine")); ?>>
 						<label class="form-check-label" for="Shrine">
 							Sandtrap
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="s3d_turf" id="s3d_turf" >
+						<input class="form-check-input" type="checkbox" value="1" name="s3d_turf" id="s3d_turf" <?php echo getChecked(isMapInVoting($jsonArray, "s3d_turf")); ?>>
 						<label class="form-check-label" for="s3d_turf">
 							Icebox
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="s3d_reactor" id="s3d_reactor" >
+						<input class="form-check-input" type="checkbox" value="1" name="s3d_reactor" id="s3d_reactor" <?php echo getChecked(isMapInVoting($jsonArray, "s3d_reactor")); ?>>
 						<label class="form-check-label" for="s3d_reactor">
 							Reactor
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="Chill" id="Chill" >
+						<input class="form-check-input" type="checkbox" value="1" name="Chill" id="Chill" <?php echo getChecked(isMapInVoting($jsonArray, "Chill")); ?>>
 						<label class="form-check-label" for="Chill">
 							Narrows
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="Deadlock" id="Deadlock" >
+						<input class="form-check-input" type="checkbox" value="1" name="Deadlock" id="Deadlock" <?php echo getChecked(isMapInVoting($jsonArray, "Deadlock")); ?>>
 						<label class="form-check-label" for="Deadlock">
 							High Ground
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="Zanzibar" id="Zanzibar" >
+						<input class="form-check-input" type="checkbox" value="1" name="Zanzibar" id="Zanzibar" <?php echo getChecked(isMapInVoting($jsonArray, "Zanzibar")); ?>>
 						<label class="form-check-label" for="Zanzibar">
 							Last Resort
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="riverworld" id="riverworld" >
+						<input class="form-check-input" type="checkbox" value="1" name="riverworld" id="riverworld" <?php echo getChecked(isMapInVoting($jsonArray, "riverworld")); ?>>
 						<label class="form-check-label" for="riverworld">
 							Valhalla
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="Cyberdyne" id="Cyberdyne" >
+						<input class="form-check-input" type="checkbox" value="1" name="Cyberdyne" id="Cyberdyne" <?php echo getChecked(isMapInVoting($jsonArray, "Cyberdyne")); ?>>
 						<label class="form-check-label" for="Cyberdyne">
 							The Pit
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="guardian" id="guardian" >
+						<input class="form-check-input" type="checkbox" value="1" name="guardian" id="guardian" <?php echo getChecked(isMapInVoting($jsonArray, "guardian")); ?>>
 						<label class="form-check-label" for="guardian">
 							Guardian
 						</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" value="1" name="s3d_avalanche" id="s3d_avalanche" >
+						<input class="form-check-input" type="checkbox" value="1" name="s3d_avalanche" id="s3d_avalanche" <?php echo getChecked(isMapInVoting($jsonArray, "s3d_avalanche")); ?>>
 						<label class="form-check-label" for="bottomClip">
 							Diamondback
 						</label>
@@ -371,6 +380,74 @@ foreach ($jsonArray['Types'] as &$variant)
 			</div>
 		</form>
 		</main>
+		<main id="rconMain" role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="display:none;">
+			<div class="pagination-centered text-center" style="width: 100%; height: 90%;" id="consoleContainer">
+				<textarea id="messageLog" class="form-control BottomRadius" aria-label="With textarea" readonly style="height: 300px;"></textarea>
+				<div id="commandContainer" style="" class="input-group mb-3 ">
+					<input type="text" id="rconCommand" class="form-control TopRadius" placeholder="RCON Command" aria-label="Recipient's username" aria-describedby="basic-addon2">
+					<div class="input-group-append" style="border-radius: 0 !important">
+						<button id="commandSubmit" class="btn btn-outline-secondary TopRadius" type="button">Send</button>
+					</div>
+				</div>
+			</div>
+		</main>	
+		<main id="playersMain" role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="display:none;">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<h1 class="h2">Players On Server</h1>
+				<div class="btn-toolbar mb-2 mb-md-0">
+					<button  class="btn btn-sm btn-outline-secondary btn-save" onclick="listPlayers();">
+						<span data-feather="save"></span>
+						Refresh List
+					</button>
+				</div>
+			</div>
+			<div class="container-fluid variantGroup" id="">
+				<h1 class="h5 font-weight-normal">Players</h1>
+				<div id="playerListDiv" class="list-group list-group-flush addBorder">
+					<div class="list-group-item disabled list-group-info">
+						<div class="variantContent">Player Name</div>
+						<div class="variantContent">User ID</div>
+						<div class="variantContent">IP Adress</div>
+						<div class="variantContent">Controls</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<main id="usersMain" role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="display:none;">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+				<h1 class="h2">Users</h1>
+				<div class="btn-toolbar mb-2 mb-md-0">
+					<!--<button  class="btn btn-sm btn-outline-secondary btn-save" onclick="listPlayers();">
+						<span data-feather="save"></span>
+						Refresh List
+					</button>-->
+				</div>
+			</div>
+			<div class="container-fluid variantGroup" id="">
+				<h1 class="h5 font-weight-normal">Players</h1>
+				<div id="playerListDiv" class="list-group list-group-flush addBorder">
+					<div class="list-group-item disabled list-group-info">
+						<div class="row">
+							<div class="col">
+							  Username
+							</div>
+							<div class="col">
+							  Controls
+							</div>
+							<div class="col">
+							  Controls
+							</div>
+							<div class="col">
+							  Controls
+							</div>
+							<div class="col">
+							  Controls
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
 	  </div>
     </div>
 	
@@ -390,6 +467,7 @@ foreach ($jsonArray['Types'] as &$variant)
     <script>
       feather.replace();
     </script>
+	<script src="js/ElRcon.js"></script>
 	<script src="js/rcon.js"></script>
 	</body>
 </html>
